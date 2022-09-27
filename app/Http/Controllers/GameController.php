@@ -38,23 +38,47 @@ class GameController extends Controller
 
     public function resetBoard(){
 
-        session()->forget('data');
+        session()->flush();
         return redirect()->back();
     }
 
     public function checkMatch(Request $request){
 
+        $letters = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+
+        $p1_match_count = 0;
+        $p2_match_count = 0;
+
         $player1_matches = session('player1_matches');
         $player2_matches = session('player2_matches');
 
-        $match_count = session('data')['match_count'];
+        $count = session('data')['match_count'];
 
         if($request->player == 'p1'){
 
             array_push($player1_matches, $request->tile_id);
             session(['player1_matches'=> $player1_matches]);
 
-            return response()->json(['success'=> session('player1_matches')]); 
+            for($i = 1; $i <= $count; $i++){
+
+                $horizontal_combination = [];
+    
+                for($j=1; $j<=$count; $j++){
+
+                    if($p1_match_count == $count){
+
+                        return response()->json([
+                            'success'=> 'Player 1 wins',
+                            'status' => 201,
+                            'winner' => 'p1'
+                        ]);
+                    }
+
+                    if(in_array($letters[$j].$i, $player1_matches)){
+                        $p1_match_count += 1;
+                    }
+                }
+            }
         }
 
         if($request->player == 'p2'){
@@ -62,9 +86,31 @@ class GameController extends Controller
             array_push($player2_matches, $request->tile_id);
             session(['player2_matches'=> $player2_matches]);
 
-            return response()->json(['success'=> session('player2_matches')]); 
+            for($i = 1; $i <= $count; $i++){
+
+                $horizontal_combination = [];
+    
+                for($j=1; $j<=$count; $j++){
+
+                    if($p2_match_count == $count){
+
+                        return response()->json([
+                            'success'=> 'Player 2 wins',
+                            'status' => 201,
+                            'winner' => 'p2'
+                        ]);
+                    }
+
+                    if(in_array($letters[$j].$i, $player2_matches)){
+                        $p2_match_count += 1;
+                    }
+                }
+            } 
         }
 
-        
+        return response()->json([
+            'success'=> 'No winner, keep going.',
+            'status' => 200
+        ]);        
     }
 }

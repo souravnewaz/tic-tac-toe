@@ -200,7 +200,27 @@
            url:"{{ route('check-match') }}",
            data:{player:player, tile_id:id},
             success:function(data){
-                console.log(data.success);
+               
+                if(data.status == 201){
+                    
+                    alert(data.success)
+                    $('#winner').val(data.success);
+
+                    if(data.winner == 'p1'){
+
+                        var p1 = $('#player1').text();
+                        $('#active_player').text(p1+ ' Wins!');
+                        $('#active_player').removeClass('text-primary');
+                        $('#active_player').addClass('text-danger');
+                    }
+                    if(data.winner == 'p2'){
+
+                        var p2 = $('#player2').text();
+                        $('#active_player').text(p2+ ' Wins!');
+                        $('#active_player').removeClass('text-primary');
+                        $('#active_player').addClass('text-danger');
+                    }
+                }
             }
         });
     }

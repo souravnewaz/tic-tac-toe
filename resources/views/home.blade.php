@@ -130,7 +130,7 @@
         
         if(parseInt(match_count) > parseInt(board_size)){
 
-            alert('Match count must be less '+ board_size);
+            alert('Match count must be less than or equal to '+ board_size);
             return false;
 
         }else{
